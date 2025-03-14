@@ -6,7 +6,17 @@ VGS-Zero から GBA へのゲームの移植に役立つライブラリとツー
 
 ### Libraries
 
-ソースコードディレクトリに [src](./src) 以下のファイルを入れて `#include` すれば利用できます。
+1. ソースコードディレクトリに [./src](./src) 以下のファイルをコピー
+2. `#include "gbasdk.h"`
+
+API 仕様はヘッダファイルの実装を確認してください。
+
+[gbasdk.h](./src/gbasdk.h) は以下の機能別 API のヘッダファイルを `#include` しています。
+
+|Header File|Function|
+|:-----|:-------|
+|[./src/vdp.h](./src/vdp.h)|映像処理装置 (VDP) 関連のAPI|
+|[./src/joypad.h](./src/joypad.h)|ジョイパッド関連のAPI|
 
 ### Tools
 
@@ -18,7 +28,7 @@ VGS-Zero から GBA へのゲームの移植に役立つライブラリとツー
 `Hello, World!` を表示する簡単な実装例を提供しています。
 
 ```c
-#include "vdp.h"
+#include "gbasdk.h"
 #include "palette_dat.h"
 #include "font_dat.h"
 
@@ -35,7 +45,7 @@ int main(void)
 }
 ```
 
-- OS は macOS or Linux を想定しています
+- ビルド環境の OS は macOS or Linux をサポートしています
 - devkitPro で構築した開発環境での利用を想定しています
 - example の実行には mgba が必要です
   - macOS: `brew install mgba`
