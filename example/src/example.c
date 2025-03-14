@@ -1,4 +1,4 @@
-#include "vdp.h"
+#include "gbasdk.h"
 #include "palette_dat.h"
 #include "font_dat.h"
 
