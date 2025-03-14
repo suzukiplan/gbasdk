@@ -1,4 +1,4 @@
-# gbalib (WIP)
+# GBA SDK for port from VGS-Zero (WIP)
 
 VGS-Zero から GBA へのゲームの移植に役立つライブラリとツールセットです。
 
