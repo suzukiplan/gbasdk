@@ -36,7 +36,7 @@ void vdp_init(void)
     // M: mosaic
     // cc: Character Base Block  (0-3, in units of 16 KBytes)
     // pp: priority
-    //          ss0aaaaaPM00ccpp
+    //             ss0aaaaaPM00ccpp
     _bgctrl[0] = 0b0001110000000011;
     _bgctrl[1] = 0b0001110100000010;
     _bgctrl[2] = 0b0001111000000001;
