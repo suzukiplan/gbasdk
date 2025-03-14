@@ -11,5 +11,28 @@ int main(void)
     vdp_cls();                                  // 画面をクリア
     vdp_print_bg(0, 9, 10, "HELLO,WORLD!");     // BG0 の (9,10) の位置に HELLO,WORLD! を表示
     vdp_force_vblank(OFF);                      // VBLANK時のみ画面更新できる状態にする
-    while (ON) { vdp_wait_vblank(); }           // VBLANK待ちを繰り返す無限ループ
+
+    uint16_t sx = 0;
+    uint16_t sy = 0;
+    while (ON) {
+        // VBLANKを待機
+        vdp_wait_vblank();
+
+        // ゲームパッドの入力を取得
+        uint16_t joypad = joypad_get();
+
+        // dpadの左右が押された場合はBGを左右スクロール
+        if (joypad_check_left(joypad)) {
+            vdp_scroll_x(0, ++sx);
+        } else if (joypad_check_right(joypad)) {
+            vdp_scroll_x(0, --sx);
+        }
+
+        // dpadの上下が押された場合はBGを上下スクロール
+        if (joypad_check_up(joypad)) {
+            vdp_scroll_y(0, ++sy);
+        } else if (joypad_check_down(joypad)) {
+            vdp_scroll_y(0, --sy);
+        }
+    }
 }

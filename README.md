@@ -27,24 +27,6 @@ API 仕様はヘッダファイルの実装を確認してください。
 
 `Hello, World!` を表示する簡単な実装例を提供しています。
 
-```c
-#include "gbasdk.h"
-#include "palette_dat.h"
-#include "font_dat.h"
-
-int main(void)
-{
-    vdp_init();                                 // VDPを初期化
-    vdp_force_vblank(ON);                       // いつでもVRAM更新できる状態にする
-    vdp_palette_init(palette_dat);              // 16x16パレットを初期化
-    vdp_set_tile(0, font_dat, font_dat_size);   // フォント画像をVRAMへ読み込む
-    vdp_cls();                                  // 画面をクリア
-    vdp_print_bg(0, 9, 10, "HELLO,WORLD!");     // BG0 の (9,10) の位置に HELLO,WORLD! を表示
-    vdp_force_vblank(OFF);                      // VBLANK時のみ画面更新できる状態にする
-    while (ON) { vdp_wait_vblank(); }           // VBLANK待ちを繰り返す無限ループ
-}
-```
-
 - ビルド環境の OS は macOS or Linux をサポートしています
 - devkitPro で構築した開発環境での利用を想定しています
 - example の実行には mgba が必要です
@@ -60,6 +42,10 @@ make
 ```
 
 ![preview](preview.png)
+
+ジョイパッドの上下左右を押すことで HW スクロール機能を用いて `Hello, World!` を 8 方向に動かすことができます。
+
+詳細は [./example/src/example.c](./example/src/example.c) の実装をご確認ください。
 
 ## License
 
