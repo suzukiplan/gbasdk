@@ -56,6 +56,7 @@ void vdp_force_vblank(int on)
     } else {
         dispcnt &= 0b1111111101111111;
     }
+    _dispcnt[0] = dispcnt;
 }
 
 void vdp_print_bg(int no, int x, int y, const char* text)
