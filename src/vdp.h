@@ -6,6 +6,9 @@
 extern "C" {
 #endif
 
+#define ON 1
+#define OFF 0
+
 extern uint16_t* _dispcnt;
 extern uint16_t* _scroll;
 extern uint16_t* _palette;
