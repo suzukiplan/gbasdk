@@ -8,7 +8,8 @@ all:
 clean:
 	rm -rf build
 	rm -rf data
-	rm -f example.*
+	rm -f *.elf
+	rm -f *.sav
 	rm -f ./src/vdp.c
 	rm -f ./src/vdp.h
 
