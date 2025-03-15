@@ -1,2 +1,7 @@
 copy
 .vscode
+example/data
+example/build
+example/*.elf
+example/*.sav
+

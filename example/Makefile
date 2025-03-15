@@ -1,4 +1,5 @@
 all:
+	cd .. && find src | grep -e "\.h" -e "\.c" >./example/.gitignore
 	cd ../tools && make
 	make build_data
 	cp -pr ../src/* src

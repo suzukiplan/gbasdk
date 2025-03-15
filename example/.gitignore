@@ -1,10 +1,5 @@
-data
-build
-src/vdp.c
-src/vdp.h
-src/joypad.c
-src/joypad.h
 src/gbasdk.h
-*.elf
-*.sav
-
+src/joypad.c
+src/vdp.c
+src/joypad.h
+src/vdp.h
