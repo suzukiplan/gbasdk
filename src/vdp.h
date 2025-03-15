@@ -59,6 +59,16 @@ inline void vdp_cls_bg(int no)
     memset(_nametbl[no & 0x03], 0, 0x800);
 }
 
+inline void vdp_clear_bg(int no, int x, int y, int width, int height)
+{
+    if (0 < width && 0 < height) {
+        no &= 0x03;
+        for (int i = 0; i < height; i++) {
+            memset(_nametbl[no] + 0x20 * (i + y) + x, 0, width * 2);
+        }
+    }
+}
+
 inline void vdp_fill_bg(int no, uint16_t pal, uint16_t ptn)
 {
     uint16_t attr = ((pal & 0xF) << 12) | ptn;
