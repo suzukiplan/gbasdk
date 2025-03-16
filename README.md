@@ -22,7 +22,8 @@ API 仕様はヘッダファイルの実装を確認してください。
 ### Tools
 
 - [./tools/bmp2pal/](./tools/bmp2pal/) ... 256色BitmapからGBA形式パレットを生成
-- [./tools/bmp2chr/](./tools/bmp2chr/) ... 256色 or 16色BitmapからGBAの16/16形式- [./tools/wav2pcm/](./tools/wav2pcm/) ... 44100Hz, 16bit, 1ch (VGS-Zero形式) の wav ファイルを GBA 形式（16384Hz, 8bit, 1ch）の RAW PCM データ（sfx形式）に変換
+- [./tools/bmp2chr/](./tools/bmp2chr/) ... 256色 or 16色BitmapからGBAの16/16形式
+- [./tools/wav2pcm/](./tools/wav2pcm/) ... 44100Hz, 16bit, 1ch (VGS-Zero形式) の wav ファイルを GBA 形式（16384Hz, 8bit, 1ch）の RAW PCM データ（sfx形式）に変換
 
 ## Example
 
