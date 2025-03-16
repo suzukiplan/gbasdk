@@ -1,5 +1,7 @@
+src/sfx.c
 src/gbasdk.h
 src/joypad.c
 src/vdp.c
+src/sfx.h
 src/joypad.h
 src/vdp.h

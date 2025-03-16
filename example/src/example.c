@@ -1,11 +1,14 @@
 #include "gbasdk.h"
 #include "palette_dat.h"
 #include "font_dat.h"
+#include "sfx_pcm.h"
 
 int main(void)
 {
     vdp_init();                                 // VDPを初期化
     vdp_force_vblank(ON);                       // いつでもVRAM更新できる状態にする
+    sfx_init();                                 // 効果音を初期化
+    sfx_load(0, sfx_pcm, sfx_pcm_size);         // 効果音を No.0 へロード
     vdp_palette_init(palette_dat);              // 16x16パレットを初期化
     vdp_set_tile(0, font_dat, font_dat_size);   // フォント画像をVRAMへ読み込む
     vdp_cls();                                  // 画面をクリア
@@ -14,6 +17,7 @@ int main(void)
 
     uint16_t sx = 0;
     uint16_t sy = 0;
+    uint16_t joypad_prev = 0xFFFF;
     while (ON) {
         // VBLANKを待機
         vdp_wait_vblank();
@@ -34,5 +38,12 @@ int main(void)
         } else if (joypad_check_down(joypad)) {
             vdp_scroll_y(0, --sy);
         }
+
+        // STARTが押されたら効果音を鳴らす
+        if (joypad_check_start(joypad) && !joypad_check_start(joypad_prev)) {
+            sfx_play(0);
+        }
+
+        joypad_prev = joypad;
     }
 }
