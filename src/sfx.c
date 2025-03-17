@@ -1,3 +1,8 @@
+/**
+ * Play 8-bit PCM as sound effect using DMA1 and Timer0
+ * This code was created with reference to the following wiki:
+ * https://akkera102.sakura.ne.jp/gbadev/index.php?tutorial.22
+ */
 #include <gba_sound.h>
 #include <gba_timers.h>
 #include <gba_dma.h>
