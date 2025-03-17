@@ -135,8 +135,12 @@ int main(int argc, char* argv[])
     double samples = size / 2;
     int samples8 = 0;
     int8_t* wav8 = (int8_t*)malloc(size / 2);
-    for (double s16 = 0.0; s16 < size / 2; s16 += 44100.0 / 16384.0) {
-        wav8[samples8++] = (int8_t)(wav16[(int)s16] / 256);
+    for (double s16 = 0.0; s16 < samples; s16 += 44100.0 / 16384.0) {
+        int tmp = wav16[(int)s16];
+        tmp *= 70;
+        tmp /= 100;
+        tmp /= 256;
+        wav8[samples8++] = (int8_t)tmp;
     } 
     printf("- GBA(16kHz/ 8bit) PCM size: %d bytes\n", samples8);
 
