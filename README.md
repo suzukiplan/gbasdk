@@ -15,9 +15,10 @@ API 仕様はヘッダファイルの実装を確認してください。
 
 |Header File|Function|
 |:-----|:-------|
-|[./src/vdp.h](./src/vdp.h)|映像処理装置 (VDP) 関連のAPI|
-|[./src/sfx.h](./src/sfx.h)|PCM 効果音関連のAPI|
-|[./src/joypad.h](./src/joypad.h)|ジョイパッド関連のAPI|
+|[./src/vdp.h](./src/vdp.h)|映像処理装置 (VDP) 関連の API|
+|[./src/vgm.h](./src/vgm.h)|BGM 関連の API|
+|[./src/sfx.h](./src/sfx.h)|PCM 効果音関連の API|
+|[./src/joypad.h](./src/joypad.h)|ジョイパッド関連の API|
 
 ### Tools
 
