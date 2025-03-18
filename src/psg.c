@@ -45,10 +45,7 @@ void psg_play(const void* data)
 
 void psg_stop(void)
 {
-    *((uint16_t*)(0x4000062)) = 0x0000; // reset ch1 volume
-    *((uint16_t*)(0x4000068)) = 0x0000; // reset ch2 volume
-    *((uint16_t*)(0x4000072)) = 0x0000; // reset ch3 volume
-    *((uint16_t*)(0x4000078)) = 0x0000; // reset ch4 volume
+    *((uint8_t*)0x4000084) = 0x00; // Reset PSG/FIFO Master (set the all of all PSG regs = 0) and Sound1~4 OFF (full muted)
     _psg.data = NULL;
 }
 
