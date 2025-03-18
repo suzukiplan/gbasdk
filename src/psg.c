@@ -15,7 +15,6 @@
  * GBA Register Specification
  * https://problemkaputt.de/gbatek.htm#gbasoundcontroller
  */
-#include <gba_sound.h>
 #include <string.h>
 #include <stdint.h>
 #include "psg.h"

@@ -1,9 +1,9 @@
 src/sfx.c
 src/gbasdk.h
 src/joypad.c
-src/vgm.c
+src/psg.h
 src/vdp.c
 src/sfx.h
+src/psg.c
 src/joypad.h
 src/vdp.h
-src/vgm.h
