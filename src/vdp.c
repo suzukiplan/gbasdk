@@ -3,7 +3,7 @@
 #include <gba_systemcalls.h>
 #include "vdp.h"
 #include "sfx.h"
-#include "vgm.h"
+#include "psg.h"
 
 uint16_t* _dispcnt = (uint16_t*)0x4000000;
 uint16_t* _bgctrl = (uint16_t*)0x4000008;
@@ -49,7 +49,7 @@ void vdp_wait_vblank(void)
 {
     VBlankIntrWait();
     sfx_frame();
-    vgm_frame();
+    psg_frame();
 }
 
 void vdp_force_vblank(int on)

@@ -149,6 +149,10 @@ $(OUTPUT).elf	:	$(OFILES)
 	@echo $(notdir $<)
 	@$(bin2o)
 
+%.psg.o	%psg.h :	%.psg
+	@echo $(notdir $<)
+	@$(bin2o)
+
 -include $(DEPSDIR)/*.d
 
 #---------------------------------------------------------------------------------

@@ -16,8 +16,8 @@ API 仕様はヘッダファイルの実装を確認してください。
 |Header File|Function|
 |:-----|:-------|
 |[./src/vdp.h](./src/vdp.h)|映像処理装置 (VDP) 関連の API|
-|[./src/vgm.h](./src/vgm.h)|BGM 関連の API|
-|[./src/sfx.h](./src/sfx.h)|PCM 効果音関連の API|
+|[./src/psg.h](./src/psg.h)|BGM (GB互換音源) 関連の API|
+|[./src/sfx.h](./src/sfx.h)|効果音 (PCM) 関連の API|
 |[./src/joypad.h](./src/joypad.h)|ジョイパッド関連の API|
 
 ### Tools
@@ -25,6 +25,7 @@ API 仕様はヘッダファイルの実装を確認してください。
 - [./tools/bmp2pal/](./tools/bmp2pal/) ... 256色BitmapからGBA形式パレットを生成
 - [./tools/bmp2chr/](./tools/bmp2chr/) ... 256色 or 16色BitmapからGBAの16/16形式
 - [./tools/wav2pcm/](./tools/wav2pcm/) ... 44100Hz, 16bit, 1ch (VGS-Zero形式) の wav ファイルを GBA 形式（16384Hz, 8bit, 1ch）の RAW PCM データに変換
+- [./tools/vgm2psg/](./tools/vgm2psg/) ... [Furnace Tracker](https://github.com/tildearrow/furnace) 等で出力した GB 音源用の VGM ファイルを BGM API が読めるデータ形式に変換
 
 ## Example
 
