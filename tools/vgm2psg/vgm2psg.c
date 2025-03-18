@@ -111,6 +111,11 @@ int main(int argc, char* argv[])
     uint32_t version;
     memcpy(&version, &data[0x08], 4);
     printf("- version = %X\n", version);
+    if (version < 0x0161) {
+        puts("Incorrect version!");
+        puts("GB DMG has supported VGM1.61 or later.");
+        return -1;
+    }
 
     uint32_t loop;
     memcpy(&loop, &data[0x1C], 4);
