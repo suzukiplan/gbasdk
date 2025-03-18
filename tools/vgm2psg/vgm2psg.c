@@ -71,12 +71,9 @@ static void write_wreg_cmd(FILE* fp, uint8_t addr, uint8_t value)
     }
     uint8_t out[2];
     out[0] = _vgm_regs[addr];
-    /*
-    if (0x73 == out[0]) {
-        puts("set msb of NR32");
-        value |= 0x80;
+    if (0x70 == out[0]) {
+        value |= 0b00100000; // set bank and dimension flag
     }
-    */
     out[1] = value;
     fwrite(out, 1, 2, fp);
 }
@@ -119,11 +116,12 @@ int main(int argc, char* argv[])
 
     uint32_t loop;
     memcpy(&loop, &data[0x1C], 4);
+    loop += 0x1C;
     printf("- loop offset = %u (0x%X)\n", loop, loop);
 
     uint32_t start;
     memcpy(&start, &data[0x34], 4);
-    start += 0x40;
+    start += 0x40 - 0x0C;
     printf("- data offset = %u (0x%X)\n", start, start);
 
     uint32_t clock;
@@ -172,6 +170,13 @@ int main(int argc, char* argv[])
             cmd = data[offset++];
         }
         switch (cmd) {
+            case 0x61: {
+                samples += 735;
+                fwrite(zero, 1, 1, fp);
+                psg_offset += 1;
+                offset += 2;
+                break;
+            }
             case 0x62: {
                 samples += 735;
                 fwrite(zero, 1, 1, fp);
