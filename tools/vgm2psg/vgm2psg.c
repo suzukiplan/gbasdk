@@ -188,8 +188,8 @@ int main(int argc, char* argv[])
                 fwrite(&psg_loop, 1, 4, fp);
                 printf("- psg_loop = %u (0x%X)\n", psg_loop, psg_loop);
                 if (loop && !psg_loop) {
-                    puts("psg_loop has not set.");
-                    exit(-1);
+                    puts("warning: psg_loop has not set.");
+                    puts("saved as no loop song.");
                 }
                 printf("- total samples = %lluHz (%llusec)\n", samples, samples / 44100);
                 /*
