@@ -32,8 +32,9 @@ VGS-Zero との仕様差
 
 ### Libraries
 
-1. ソースコードディレクトリに [./src](./src) 以下のファイルをコピー
-2. `#include "gbasdk.h"`
+1. [devkitPro](https://github.com/devkitPro/) でGBAのプロジェクトを作成
+2. ソースコードディレクトリに [./src](./src) 以下のファイルをコピー
+3. `#include "gbasdk.h"`
 
 API 仕様はヘッダファイルの実装を確認してください。
 
