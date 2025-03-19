@@ -1,6 +1,32 @@
 # GBA SDK for port from VGS-Zero (WIP)
 
-VGS-Zero から GBA へのゲームの移植に役立つライブラリとツールセットです。
+[VGS-Zero](https://github.com/suzukiplan/vgszero) から GBA へのゲームの移植に役立つライブラリとツールセットです。
+
+## Feature
+
+本SDKは、VGS-Zero用に開発されたゲームをGBAへ移植する用途に特化した仕様にしています。
+
+- グラフィックスは mode0 の **16色/16パレット** のみ使用
+- map (nametable) は BG0~3 の全面で 32x32 サイズに固定
+- 音楽はGB/GBC互換音源のみを使用
+- 効果音はPCM 1chを使用（性能を優先して PCM 2ch は未使用）
+- VGS-Zero のグラフィックスと効果音をほぼそのまま移行できるツールチェインを提供
+- BGM は Furnace Tracker での作成を推奨（GB/GBC互換音源の VGM を本SDKで利用できる .psg 形式に変換するツールチェインを提供）
+
+VGS-Zero との仕様差
+
+|比較項目|VGS-Zero|GBA (本SDK)|
+|:-|:-|:-|
+|画面解像度| 240x192 | 240x160 |
+|BG面数| 2面(BG/FG) | 4面(BG0,1,2,3) |
+|nametable| 32x32 | 32x32 |
+|表示色| 16色/16パレット | 16色/16パレット |
+|最大パターン数|65792 (VRAM+DPM)|1024|
+|スプライト数|256|128|
+|スプライトサイズ|8x8 ~ 128xo128|8x8 ~ 64x64|
+|BGM|VGS or NSF|DMG (GB/GBC)|
+|SFX|PCM (44.1k, 16bits, 1ch)|PCM (16k, 8bits, 1ch)|
+|SFX同時発音|256|1|
 
 ## How to use
 
