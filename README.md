@@ -11,7 +11,7 @@
 - 音楽はGB/GBC互換音源のみを使用
 - 効果音はPCM 1chを使用（性能を優先して PCM 2ch は未使用）
 - VGS-Zero のグラフィックスと効果音をほぼそのまま移行できるツールチェインを提供
-- BGM は Furnace Tracker での作成を推奨（GB/GBC互換音源の VGM を本SDKで利用できる .psg 形式に変換するツールチェインを提供）
+- BGM は [Furnace Tracker](https://github.com/tildearrow/furnace) または [hUGETracker](https://github.com/SuperDisk/hUGETracker) での作成を推奨（GB/GBC互換音源の VGM を本SDKで利用できる .psg 形式に変換するツールチェインを提供）
 
 VGS-Zero との仕様差
 
