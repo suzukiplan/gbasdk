@@ -14,7 +14,7 @@ clean:
 	rm -f ./src/vdp.c
 	rm -f ./src/vdp.h
 
-build_data: data data/palette.dat data/font.dat data/sfx.pcm
+build_data: data data/palette.dat data/font.dat data/sfx.pcm data/bgm.psg
 
 data:
 	mkdir data
@@ -27,3 +27,7 @@ data/font.dat: image/font.bmp
 
 data/sfx.pcm: image/sfx.wav
 	../tools/wav2pcm/wav2pcm $< $@
+
+data/bgm.psg: image/bgm.vgm
+	../tools/vgm2psg/vgm2psg $< $@
+

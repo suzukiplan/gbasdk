@@ -2,11 +2,14 @@
 #include "palette_dat.h"
 #include "font_dat.h"
 #include "sfx_pcm.h"
+#include "bgm_psg.h"
 
 int main(void)
 {
     vdp_init();                                 // VDPを初期化
     vdp_force_vblank(ON);                       // いつでもVRAM更新できる状態にする
+    psg_init();                                 // BGMを初期化
+    psg_play(bgm_psg);                          // BGMを再生
     sfx_init();                                 // 効果音を初期化
     sfx_load(0, sfx_pcm, sfx_pcm_size);         // 効果音を No.0 へロード
     vdp_palette_init(palette_dat);              // 16x16パレットを初期化
