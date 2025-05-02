@@ -9,7 +9,7 @@
 - グラフィックスは mode0 の **16色/16パレット** のみ使用
 - map (nametable) は BG0~3 の全面で 32x32 サイズに固定
 - 音楽はGB/GBC互換音源のみを使用
-- 効果音はPCM 1chを使用（性能を優先して PCM 2ch は未使用）
+- 効果音はPCM (2ch) を使用
 - VGS-Zero のグラフィックスと効果音をほぼそのまま移行できるツールチェインを提供
 - BGM は [Furnace Tracker](https://github.com/tildearrow/furnace) または [hUGETracker](https://github.com/SuperDisk/hUGETracker) での作成を推奨（GB/GBC互換音源の VGM を本SDKで利用できる .psg 形式に変換するツールチェインを提供）
 
@@ -25,8 +25,8 @@ VGS-Zero との仕様差
 |スプライト数|256|128|
 |スプライトサイズ|8x8 ~ 128x128|8x8 ~ 64x64|
 |BGM|VGS or NSF|DMG (GB/GBC)|
-|SFX|PCM (44.1k, 16bits, 1ch)|PCM (16k, 8bits, 1ch)|
-|SFX同時発音|256|1|
+|SFX|PCM (44.1k, 16bits, mono)|PCM (16k, 8bits, mono)|
+|SFX同時発音|256|2|
 
 ## How to use
 
