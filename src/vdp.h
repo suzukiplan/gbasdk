@@ -2,14 +2,11 @@
 #include <string.h>
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define ON 1
 #define OFF 0
 
-typedef struct {
+typedef struct
+{
     /**
      *   Bit   Expl.
      *   0-7   Y-Coordinate           (0-255)
@@ -434,7 +431,3 @@ inline void vdp_oam_copy(OAM* to, OAM* from)
     to->attr0 = from->attr0;
     to->attr1 = from->attr1;
 }
-
-#ifdef __cplusplus
-};
-#endif

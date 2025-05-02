@@ -1,9 +1,11 @@
+src/vgs0.h
 src/sfx.c
 src/gbasdk.h
 src/joypad.c
 src/psg.h
 src/vdp.c
 src/sfx.h
+src/vgs0math.c
 src/psg.c
 src/joypad.h
 src/vdp.h

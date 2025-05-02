@@ -1,4 +1,4 @@
-# GBA SDK for port from VGS-Zero (WIP)
+# GBA SDK for port from VGS-Zero
 
 [VGS-Zero](https://github.com/suzukiplan/vgszero) から GBA へのゲームの移植に役立つライブラリとツールセットです。
 
@@ -46,6 +46,7 @@ API 仕様はヘッダファイルの実装を確認してください。
 |[./src/psg.h](./src/psg.h)|BGM (GB互換音源) 関連の API|
 |[./src/sfx.h](./src/sfx.h)|効果音 (PCM) 関連の API|
 |[./src/joypad.h](./src/joypad.h)|ジョイパッド関連の API|
+|[./src/vgs0.h](./src/vgs0.h)|乱数, 角度計算 (VGS-ZeroのHAGe相当) の API|
 
 ### Tools
 
@@ -53,6 +54,76 @@ API 仕様はヘッダファイルの実装を確認してください。
 - [./tools/bmp2chr/](./tools/bmp2chr/) ... 256色 or 16色BitmapからGBAの16/16形式
 - [./tools/wav2pcm/](./tools/wav2pcm/) ... 44100Hz, 16bit, 1ch (VGS-Zero形式) の wav ファイルを GBA 形式（16384Hz, 8bit, 1ch）の RAW PCM データに変換
 - [./tools/vgm2psg/](./tools/vgm2psg/) ... [Furnace Tracker](https://github.com/tildearrow/furnace) 等で出力した GB 音源用の VGM ファイルを BGM API が読めるデータ形式に変換
+
+## TIPS
+
+### GBA Wiki
+
+GBAプログラミングの基本については以下のサイトが参考になります。
+
+- https://akkera102.sakura.ne.jp/gbadev/ (日本語)
+- https://problemkaputt.de/gbatek.htm (英語)
+
+### vdp_wait_vblank
+
+`vdp_wait_vblank` (V-BLANKの待機) は、単純に V-BLANK の待機（60fps同期）だけでなく次の処理を含んでいます。
+
+1. BGM の再生
+2. 効果音の再生
+3. 仮想OAM を VRAM へコピー
+
+音声の再生は、厳密な一定間隔での実行が必要になるため、B-BLANK の検出直後に実行する仕様にしています。
+
+また、OAM (スプライト) の更新処理は基本的に WRAM 上で行い、V-BLANK のタイミングで一括して VRAM へ転送することでチラつきの発生を抑止しています。なお、BG については（VRAMサイズが大きいため）`vdp_` 関数で直接 VRAM の更新をしているため、`vdp_wait_vblank` 呼び出し後は BG を更新する処理を実行することが望ましいと考えられます。
+
+### Scale and Rotate Sprites
+
+本SDKでは、スプライトの拡大縮小や回転機能について、通常のGBAプログラミングとは異なる独自設計の仕様に __制限__ しています。
+
+通常のGBAプログラミングでは、ハードウェアアフィン変換の機能を駆使することで自由度の高い拡大縮小・回転などの変形ができますが、本SDKでは __22.5度単位の16方向の回転__、__15度単位の4方向の回転__、__0.5倍単位の4種類の拡大縮小（0.5, 1.0, 1.5, 2.0）__ のみ利用できる形になっています。
+
+拡大縮小または回転を行いたいスプライトは、`vdp_oam_init` の引数2に `ON` を指定します。
+
+```c
+void vdp_oam_init(
+    OAM* oam,   // target OAM
+    int transform, // 0: disable, not0: enable
+    int shape,  // type of size ... 0: 8x8,16x16,32x32,64x64 | 1: 16x8,32x8,32x16,64x32 | 2: 8x16,8x32,16x32,32x64
+    int ptn,    // pattern index number (0-511)
+    int size,   // pattern size (0-3)
+    int palette // palette number (0-15)
+);
+```
+
+そして、そのスプライトに対して `vdp_oam_scale` または `vdp_oam_rotate` で拡大縮小または回転をすることができます。
+
+```c
+/**
+ * スプライトを回転
+ * rotate:
+ * - 0~15 = 0度~338度 (※約22.5度刻み)
+ * - 16 = 15度, 17 = 30度, 18 = 330度, 19 = 345度
+ *
+ * Remarks:
+ * - rotate に 20 以上 または 0 未満の値を設定するとバッファオーバライトするので注意
+ * - 本関数を呼び出すスプライトは vdp_oam_init で transform に ON を設定する必要がある
+ * - 画像によっては見切れる場合がある
+ * - 確実に見切れないようにするには vdp_oam_double を ON に設定する必要がある
+ */
+inline void vdp_oam_rotate(OAM* oam, int rotate);
+
+/**
+ * スプライトを拡大 or 縮小
+ * scale: 0 = 0.5倍, 1 = 1.0倍, 2 = 1.5倍, 3 = 2.0倍
+ *
+ * Remarks:
+ * - scale に 4 以上 または 0 未満の値を設定するとバッファオーバライトするので注意
+ * - 本関数を呼び出すスプライトは vdp_oam_init で transform に ON を設定する必要がある
+ * - 2 (1.5倍) 以上で拡大表示と見切れが発生する
+ * - 見切れを回避するには vdp_oam_double を ON に設定する必要がある
+ */
+inline void vdp_oam_scale(OAM* oam, int scale);
+```
 
 ## Example
 

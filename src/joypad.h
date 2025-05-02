@@ -1,10 +1,6 @@
 #pragma once
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 extern uint16_t* _joypad;
 
 /*
@@ -36,6 +32,3 @@ inline int joypad_check_down(uint16_t pad) { return 0 == (pad & 0b0010000000); }
 inline int joypad_check_r(uint16_t pad) { return 0 == (pad & 0b0100000000); }
 inline int joypad_check_l(uint16_t pad) { return 0 == (pad & 0b1000000000); }
 inline int joypad_check_any(uint16_t pad) { return 0b1100001111 != (pad & 0b1100001111); }
-#ifdef __cplusplus
-};
-#endif

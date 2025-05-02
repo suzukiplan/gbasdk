@@ -5,7 +5,8 @@
 #include "sfx.h"
 #include "psg.h"
 
-typedef struct {
+typedef struct
+{
     uint16_t dummy1[3];
     uint16_t pa;
     uint16_t dummy2[3];
@@ -964,19 +965,19 @@ void vdp_oam_clear(void)
 }
 
 void vdp_oam_init(
-    OAM* oam,   // target OAM
-    int rotate, // 0: disable, not0: enable
-    int shape,  // type of size ... 0: 8x8,16x16,32x32,64x64 | 1: 16x8,32x8,32x16,64x32 | 2: 8x16,8x32,16x32,32x64
-    int ptn,    // pattern index number (0-511)
-    int size,   // pattern size (0-3)
-    int palette // palette number (0-15)
+    OAM* oam,      // target OAM
+    int transform, // 0: disable, not0: enable
+    int shape,     // type of size ... 0: 8x8,16x16,32x32,64x64 | 1: 16x8,32x8,32x16,64x32 | 2: 8x16,8x32,16x32,32x64
+    int ptn,       // pattern index number (0-511)
+    int size,      // pattern size (0-3)
+    int palette    // palette number (0-15)
 )
 {
     shape &= 0x03;
     ptn &= 0x3FF;
     size &= 0x03;
     palette &= 0x0F;
-    oam->attr0 = 192 | (rotate ? 256 : 0) | (shape << 14);
+    oam->attr0 = 192 | (transform ? 256 : 0) | (shape << 14);
     oam->attr1 = 240 | ((size & 0b11) << 14);
     oam->attr2 = ptn | (2 << 10) | (palette << 12);
 }
