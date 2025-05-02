@@ -8,28 +8,32 @@
 #include <gba_dma.h>
 #include "sfx.h"
 
-#define SND_CPU_CLOCK   (16 * 1024 * 1024)
-#define SND_PCM_RATE    16384
-#define SND_FREQUENCY   (SND_CPU_CLOCK / SND_PCM_RATE)
+#define SND_CPU_CLOCK (16 * 1024 * 1024)
+#define SND_PCM_RATE 16384
+#define SND_FREQUENCY (SND_CPU_CLOCK / SND_PCM_RATE)
 
 typedef struct SFXData_ {
     const int8_t* data;
     int frames;
 } SFXData;
 
-static struct SFXTable {
+typedef struct Channel_ {
     int left;
     int playing;
+} Channel;
+
+static struct SFXTable {
+    Channel ch[2];
     SFXData data[MAX_SFX_NUM];
 } _sfx;
 
 void sfx_init(void)
 {
     memset(&_sfx, 0, sizeof(_sfx));
-	REG_TM0CNT_L = 0x10000 - SND_FREQUENCY;
-	REG_SOUNDCNT_X = SNDSTAT_ENABLE;
-	REG_SOUNDCNT_L = 0xFFFF;
-	REG_SOUNDCNT_H = SNDA_RESET_FIFO | SNDB_RESET_FIFO | SNDA_VOL_100 | SNDB_VOL_100 | DSOUNDCTRL_ATIMER(0) | DSOUNDCTRL_BTIMER(1) | 1;
+    REG_TM0CNT_L = 0x10000 - SND_FREQUENCY;
+    REG_TM1CNT_L = 0x10000 - SND_FREQUENCY;
+    REG_SOUNDCNT_L = 0;
+    REG_SOUNDCNT_H = SNDA_RESET_FIFO | SNDB_RESET_FIFO | SNDA_VOL_100 | SNDB_VOL_100 | DSOUNDCTRL_ATIMER(0) | DSOUNDCTRL_BTIMER(1) | 1;
 }
 
 void sfx_load(int no, const void* data, size_t size)
@@ -39,38 +43,80 @@ void sfx_load(int no, const void* data, size_t size)
     _sfx.data[no].frames = ((size - 1024) * 60) / SND_PCM_RATE;
 }
 
-void sfx_play(int no)
+static inline void _play(int ch, int no)
 {
-    if (_sfx.left && _sfx.playing < no) {
+    if (0 != ch && 1 != ch) {
+        return; // invalid channel
+    }
+    if (_sfx.ch[ch].left && _sfx.ch[ch].playing < no) {
         return; // Canceled because a high priority (low number) sound effect is playing
     }
     if (_sfx.data[no].data) {
-        _sfx.playing = no;
-        _sfx.left = _sfx.data[no].frames;
-        REG_TM0CNT_H = 0;
-        REG_DMA1CNT = 0;
-        DMA1COPY(_sfx.data[no].data, &REG_FIFO_A, DMA_SPECIAL | DMA32 | DMA_REPEAT | DMA_SRC_INC | DMA_DST_FIXED);
-        REG_TM0CNT_H    = TIMER_START;
-        REG_SOUNDCNT_H |= (SNDA_R_ENABLE | SNDA_L_ENABLE | SNDA_RESET_FIFO);
+        _sfx.ch[ch].playing = no;
+        _sfx.ch[ch].left = _sfx.data[no].frames;
+        if (0 == ch) {
+            REG_TM0CNT_H = 0;
+            REG_DMA1CNT = 0;
+            DMA1COPY(_sfx.data[no].data, &REG_FIFO_A, DMA_SPECIAL | DMA32 | DMA_REPEAT | DMA_SRC_INC | DMA_DST_FIXED);
+            REG_TM0CNT_H = TIMER_START;
+            REG_SOUNDCNT_H |= (SNDA_R_ENABLE | SNDA_L_ENABLE | SNDA_RESET_FIFO);
+        } else {
+            REG_TM1CNT_H = 0;
+            REG_DMA2CNT = 0;
+            DMA2COPY(_sfx.data[no].data, &REG_FIFO_B, DMA_SPECIAL | DMA32 | DMA_REPEAT | DMA_SRC_INC | DMA_DST_FIXED);
+            REG_TM1CNT_H = TIMER_START;
+            REG_SOUNDCNT_H |= (SNDB_R_ENABLE | SNDB_L_ENABLE | SNDB_RESET_FIFO);
+        }
     } else {
-        sfx_stop(); // no data
+        sfx_stop(ch); // no data
     }
+}
+
+static inline void _stop(int ch)
+{
+    if (0 != ch && 1 != ch) {
+        return; // invalid channel
+    }
+    if (0 == ch) {
+        REG_SOUNDCNT_H &= ~(SNDA_R_ENABLE | SNDA_L_ENABLE | SNDA_RESET_FIFO);
+        REG_TM1CNT_H = 0;
+        REG_DMA1CNT = 0;
+    } else {
+        REG_SOUNDCNT_H &= ~(SNDB_R_ENABLE | SNDB_L_ENABLE | SNDB_RESET_FIFO);
+        REG_TM2CNT_H = 0;
+        REG_DMA2CNT = 0;
+    }
+    _sfx.ch[ch].left = 0;
+}
+
+void sfx_play(int no)
+{
+    _play(0, no);
 }
 
 void sfx_stop()
 {
-    REG_SOUNDCNT_H &= ~(SNDA_R_ENABLE | SNDA_L_ENABLE | SNDA_RESET_FIFO);
-    REG_TM1CNT_H = 0;
-    REG_DMA1CNT = 0;
-    _sfx.left = 0;
+    _stop(0);
+}
+
+void sfx_play_ch2(int no)
+{
+    _play(1, no);
+}
+
+void sfx_stop_ch2()
+{
+    _stop(1);
 }
 
 void sfx_frame(void)
 {
-    if (_sfx.left) {
-        _sfx.left--;
-        if (0 == _sfx.left) {
-            sfx_stop();
+    for (int ch = 0; ch < 2; ch++) {
+        if (_sfx.ch[ch].left) {
+            _sfx.ch[ch].left--;
+            if (0 == _sfx.ch[ch].left) {
+                sfx_stop(ch);
+            }
         }
     }
 }

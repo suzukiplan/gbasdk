@@ -1,20 +1,21 @@
 /**
  * GBA VGM API
- * 
+ *
  * This implementation was created with reference to the following：
- * 
+ *
  * Base Implementation
  * https://akkera102.sakura.ne.jp/gbadev/?tutorial.28
- * 
+ *
  * VGM Specification
  * https://vgmrips.net/wiki/VGM_Specification#Header
- * 
+ *
  * DMG Register Specification
  * https://dic.nicovideo.jp/a/gb%E9%9F%B3%E6%BA%90
- * 
+ *
  * GBA Register Specification
  * https://problemkaputt.de/gbatek.htm#gbasoundcontroller
  */
+#include <gba_sound.h>
 #include <string.h>
 #include <stdint.h>
 #include "psg.h"
@@ -45,10 +46,19 @@ void psg_play(const void* data)
 
 void psg_stop(void)
 {
-    *((uint16_t*)0x4000062) = 0x0000; // ch1 volume zero
-    *((uint16_t*)0x4000068) = 0x0000; // ch2 volume zero
-    *((uint16_t*)0x4000072) = 0x0000; // ch3 volume zero
-    *((uint16_t*)0x4000078) = 0x0000; // ch4 volume zero
+    REG_SOUNDCNT_X = SNDSTAT_ENABLE | SNDSTAT_SQR1 | SNDSTAT_SQR2 | SNDSTAT_TRI | SNDSTAT_NOISE;
+    (*(vu8*)(REG_BASE + 0x62)) = 0x00;
+    (*(vu8*)(REG_BASE + 0x63)) = 0x08;
+    (*(vu8*)(REG_BASE + 0x68)) = 0x00;
+    (*(vu8*)(REG_BASE + 0x69)) = 0x08;
+    (*(vu8*)(REG_BASE + 0x72)) = 0x00;
+    (*(vu8*)(REG_BASE + 0x78)) = 0x00;
+    (*(vu8*)(REG_BASE + 0x79)) = 0x08;
+    (*(vu8*)(REG_BASE + 0x65)) = 0x80;
+    (*(vu8*)(REG_BASE + 0x6d)) = 0x80;
+    (*(vu8*)(REG_BASE + 0x7d)) = 0x80;
+    (*(vu8*)(REG_BASE + 0x70)) = 0;
+    (*(vu8*)(REG_BASE + 0x80)) = 0x77;
     _psg.data = NULL;
     _psg.fadeout = 0;
 }

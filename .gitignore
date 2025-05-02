@@ -4,4 +4,5 @@ example/data
 example/build
 example/*.elf
 example/*.sav
+.DS_Store
 
