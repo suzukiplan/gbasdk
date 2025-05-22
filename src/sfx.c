@@ -20,6 +20,8 @@ typedef struct SFXData_ {
 typedef struct Channel_ {
     int left;
     int playing;
+    int stop_request;
+    int play_request;
 } Channel;
 
 static struct SFXTable {
@@ -52,23 +54,8 @@ static inline void _play(int ch, int no)
         return; // Canceled because a high priority (low number) sound effect is playing
     }
     if (_sfx.data[no].data) {
+        _sfx.ch[ch].play_request = 1;
         _sfx.ch[ch].playing = no;
-        _sfx.ch[ch].left = _sfx.data[no].frames;
-        if (0 == ch) {
-            REG_TM0CNT_H = 0;
-            REG_DMA1CNT = 0;
-            DMA1COPY(_sfx.data[no].data, &REG_FIFO_A, DMA_SPECIAL | DMA32 | DMA_REPEAT | DMA_SRC_INC | DMA_DST_FIXED);
-            REG_TM0CNT_H = TIMER_START;
-            REG_SOUNDCNT_H |= (SNDA_R_ENABLE | SNDA_L_ENABLE | SNDA_RESET_FIFO);
-        } else {
-            REG_TM1CNT_H = 0;
-            REG_DMA2CNT = 0;
-            DMA2COPY(_sfx.data[no].data, &REG_FIFO_B, DMA_SPECIAL | DMA32 | DMA_REPEAT | DMA_SRC_INC | DMA_DST_FIXED);
-            REG_TM1CNT_H = TIMER_START;
-            REG_SOUNDCNT_H |= (SNDB_R_ENABLE | SNDB_L_ENABLE | SNDB_RESET_FIFO);
-        }
-    } else {
-        sfx_stop(ch); // no data
     }
 }
 
@@ -96,7 +83,7 @@ void sfx_play(int no)
 
 void sfx_stop()
 {
-    _stop(0);
+    _sfx.ch[0].stop_request = 1;
 }
 
 void sfx_play_ch2(int no)
@@ -106,12 +93,33 @@ void sfx_play_ch2(int no)
 
 void sfx_stop_ch2()
 {
-    _stop(1);
+    _sfx.ch[1].stop_request = 1;
 }
 
 void sfx_frame(void)
 {
     for (int ch = 0; ch < 2; ch++) {
+        if (_sfx.ch[ch].stop_request) {
+            _stop(ch);
+            _sfx.ch[ch].stop_request = 0;
+        }
+        if (_sfx.ch[ch].play_request) {
+            _sfx.ch[ch].play_request = 0;
+            _sfx.ch[ch].left = _sfx.data[_sfx.ch[ch].playing].frames;
+            if (0 == ch) {
+                REG_TM0CNT_H = 0;
+                REG_DMA1CNT = 0;
+                DMA1COPY(_sfx.data[_sfx.ch[ch].playing].data, &REG_FIFO_A, DMA_SPECIAL | DMA32 | DMA_REPEAT | DMA_SRC_INC | DMA_DST_FIXED);
+                REG_TM0CNT_H = TIMER_START;
+                REG_SOUNDCNT_H |= (SNDA_R_ENABLE | SNDA_L_ENABLE | SNDA_RESET_FIFO);
+            } else {
+                REG_TM1CNT_H = 0;
+                REG_DMA2CNT = 0;
+                DMA2COPY(_sfx.data[_sfx.ch[ch].playing].data, &REG_FIFO_B, DMA_SPECIAL | DMA32 | DMA_REPEAT | DMA_SRC_INC | DMA_DST_FIXED);
+                REG_TM1CNT_H = TIMER_START;
+                REG_SOUNDCNT_H |= (SNDB_R_ENABLE | SNDB_L_ENABLE | SNDB_RESET_FIFO);
+            }
+        }
         if (_sfx.ch[ch].left) {
             _sfx.ch[ch].left--;
             if (0 == _sfx.ch[ch].left) {
