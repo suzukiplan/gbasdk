@@ -26,6 +26,29 @@ static struct Context {
     int fadeout;
 } _psg;
 
+static void reset_registers(void)
+{
+    // Bits 0-3 of SOUNDCNT_X are read-only channel status flags.
+    // Disable the sound circuit to reset the PSG registers and its internal
+    // sequencer, then restore the Direct Sound mixer configuration.
+    uint16_t sound_control = REG_SOUNDCNT_H;
+    REG_SOUNDCNT_X = 0;
+    REG_SOUNDCNT_X = SNDSTAT_ENABLE;
+    REG_SOUNDCNT_H = sound_control;
+
+    // SOUNDCNT_X does not clear Wave RAM. Clear both banks so that 64-step
+    // wave playback cannot reuse samples or phase left by the previous song.
+    REG_SOUND3CNT_L = SOUND3_SETBANK(1);
+    for (int i = 0; i < 8; i++) {
+        WAVE_RAM[i] = 0;
+    }
+    REG_SOUND3CNT_L = SOUND3_SETBANK(0);
+    for (int i = 0; i < 8; i++) {
+        WAVE_RAM[i] = 0;
+    }
+    REG_SOUND3CNT_L = SOUND3_STOP;
+}
+
 // Initialize
 void psg_init(void)
 {
@@ -46,20 +69,9 @@ void psg_play(const void* data)
 
 void psg_stop(void)
 {
-    REG_SOUNDCNT_X = SNDSTAT_ENABLE | SNDSTAT_SQR1 | SNDSTAT_SQR2 | SNDSTAT_TRI | SNDSTAT_NOISE;
-    (*(vu8*)(REG_BASE + 0x62)) = 0x00;
-    (*(vu8*)(REG_BASE + 0x63)) = 0x08;
-    (*(vu8*)(REG_BASE + 0x68)) = 0x00;
-    (*(vu8*)(REG_BASE + 0x69)) = 0x08;
-    (*(vu8*)(REG_BASE + 0x72)) = 0x00;
-    (*(vu8*)(REG_BASE + 0x78)) = 0x00;
-    (*(vu8*)(REG_BASE + 0x79)) = 0x08;
-    (*(vu8*)(REG_BASE + 0x65)) = 0x80;
-    (*(vu8*)(REG_BASE + 0x6d)) = 0x80;
-    (*(vu8*)(REG_BASE + 0x7d)) = 0x80;
-    (*(vu8*)(REG_BASE + 0x70)) = 0;
-    (*(vu8*)(REG_BASE + 0x80)) = 0x77;
+    reset_registers();
     _psg.data = NULL;
+    _psg.cursor = NULL;
     _psg.fadeout = 0;
 }
 
