@@ -66,11 +66,11 @@ static inline void _stop(int ch)
     }
     if (0 == ch) {
         REG_SOUNDCNT_H &= ~(SNDA_R_ENABLE | SNDA_L_ENABLE | SNDA_RESET_FIFO);
-        REG_TM1CNT_H = 0;
+        REG_TM0CNT_H = 0;
         REG_DMA1CNT = 0;
     } else {
         REG_SOUNDCNT_H &= ~(SNDB_R_ENABLE | SNDB_L_ENABLE | SNDB_RESET_FIFO);
-        REG_TM2CNT_H = 0;
+        REG_TM1CNT_H = 0;
         REG_DMA2CNT = 0;
     }
     _sfx.ch[ch].left = 0;
@@ -81,7 +81,7 @@ void sfx_play(int no)
     _play(0, no);
 }
 
-void sfx_stop()
+void sfx_stop(void)
 {
     _sfx.ch[0].stop_request = 1;
 }
@@ -91,7 +91,7 @@ void sfx_play_ch2(int no)
     _play(1, no);
 }
 
-void sfx_stop_ch2()
+void sfx_stop_ch2(void)
 {
     _sfx.ch[1].stop_request = 1;
 }
@@ -123,7 +123,7 @@ void sfx_frame(void)
         if (_sfx.ch[ch].left) {
             _sfx.ch[ch].left--;
             if (0 == _sfx.ch[ch].left) {
-                sfx_stop(ch);
+                _stop(ch);
             }
         }
     }
